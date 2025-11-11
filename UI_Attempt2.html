@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-AR-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KE Predictive Maintenance Dashboard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="sidebar d-flex flex-column p-3">
+        <a href="#" class="sidebar-brand d-flex align-items-center mb-3">
+            <i class="bi bi-lightning-charge-fill me-2"></i>
+            <span>KE Predictive</span>
+        </a>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" onclick="showDashboard()">
+                    <i class="bi bi-grid-fill me-2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-list-task me-2"></i> Active Faults
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-broadcast me-2"></i> Transformer List
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-heading">System</div>
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-gear-fill me-2"></i> Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        
+        <nav class="top-navbar d-flex justify-content-end shadow-sm">
+            
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <a href="#" class="d-block link-dark text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill fs-5 me-3 position-relative">
+                            <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                                <span class="visually-hidden">New alerts</span>
+                            </span>
+                        </i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end text-small shadow" style="width: 350px;">
+                        <li><h6 class="dropdown-header">High-Priority Alerts</h6></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                                <div>
+                                    <span class="fw-bold">T-2101: CRITICAL</span>
+                                    <small class="d-block text-muted">Health: 22/100. Rec: REPLACE.</small>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                                <div>
+                                    <span class="fw-bold">T-4091: CRITICAL</span>
+                                    <small class="d-block text-muted">Health: 18/100. Rec: Maintenance.</small>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                                <div>
+                                    <span class="fw-bold">T-5500: WARNING</span>
+                                    <small class="d-block text-muted">Health: 45/100. Rec: Monitor.</small>
+                                </div>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="#">Show all alerts</a></li>
+                    </ul>
+                </div>
+                
+                <span class="text-muted">Welcome, Operations Manager</span>
+                <img src="https://i.pravatar.cc/40?img=1" alt="mdo" width="40" height="40" class="rounded-circle ms-2">
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+
+            <div id="main-dashboard">
+                <h1 class="h2 mb-4">Grid Health Overview</h1>
+
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-muted">Total Transformers</h5>
+                                <p class="card-text fs-2 fw-bold">8,500</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-muted">Active Faults</h5>
+                                <p class="card-text fs-2 fw-bold text-primary">12</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-muted">Warning (Yellow)</h5>
+                                <p class="card-text fs-2 fw-bold text-warning">115</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-muted">Critical (Red)</h5>
+                                <p class="card-text fs-2 fw-bold text-danger">42</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Transformer Status Overview</h5>
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                                </button>
+                            </div>
+                            
+                            <div class="card-body border-bottom p-3">
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <select id="filter-region" class="form-select form-select-sm" onchange="filterTable()">
+                                            <option value="all">All Regions</option>
+                                            <option value="johar">Region Johar</option>
+                                            <option value="dha">Region DHA</option>
+                                            <option value="nazimabad">Region Nazimabad</option>
+                                            <option value="clifton">Region Clifton</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select id="filter-risk" class="form-select form-select-sm" onchange="filterTable()">
+                                            <option value="all">All Status</option>
+                                            <option value="critical">Critical (Red)</option>
+                                            <option value="warning">Warning (Yellow)</option>
+                                            <option value="healthy">Healthy (Green)</option>
+                                            <option value="fault">Active Fault (Blue)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" id="filter-search" class="form-control form-control-sm" placeholder="Search by ID or Location..." onkeyup="filterTable()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-hover table-clickable mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Health</th>
+                                            <th>Recommendation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transformer-table-body">
+                                        <tr class="table-danger" data-region="johar" data-risk="critical" onclick="showDetail()">
+                                            <td class="fw-bold">T-2101</td>
+                                            <td>Region Johar, Johar Chowrangi</td>
+                                            <td><span class="badge bg-danger">Critical</span></td>
+                                            <td>22 / 100</td>
+                                            <td class="fw-bold">REPLACE</td>
+                                        </tr>
+                                        <tr class="table-danger" data-region="nazimabad" data-risk="critical" onclick="showDetail()">
+                                            <td class="fw-bold">T-4091</td>
+                                            <td>Region Nazimabad, Nadra Mega Center</td>
+                                            <td><span class="badge bg-danger">Critical</span></td>
+                                            <td>18 / 100</td>
+                                            <td class="fw-bold">Maintenance</td>
+                                        </tr>
+                                        <tr class="table-warning" data-region="dha" data-risk="warning" onclick="showDetail()">
+                                            <td class="fw-bold">T-5500</td>
+                                            <td>Region DHA, Phase 2</td>
+                                            <td><span class="badge bg-warning text-dark">Warning</span></td>
+                                            <td>45 / 100</td>
+                                            <td>Monitor</td>
+                                        </tr>
+                                        <tr class="table-primary" data-region="johar" data-risk="fault" onclick="showDetail()">
+                                            <td class="fw-bold">F-102</td>
+                                            <td>Region Johar, Habib University</td>
+                                            <td><span class="badge bg-primary">Active Fault</span></td>
+                                            <td>--</td>
+                                            <td>~45 mins recovery</td>
+                                        </tr>
+                                        <tr data-region="clifton" data-risk="healthy" onclick="showDetail()">
+                                            <td class="fw-bold">T-6000</td>
+                                            <td>Region Clifton, Boat Basin</td>
+                                            <td><span class="badge bg-success">Healthy</span></td>
+                                            <td>92 / 100</td>
+                                            <td>--</td>
+                                        </tr>
+                                        <tr class="table-primary" data-region="dha" data-risk="fault" onclick="showDetail()">
+                                            <td class="fw-bold">F-105</td>
+                                            <td>Region DHA, Phase 5</td>
+                                            <td><span class="badge bg-primary">Active Fault</span></td>
+                                            <td>--</td>
+                                            <td>~2.5 hours recovery</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Grid Health Map</h5>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <p class="text-muted">Color-coded transformer health status. Click any icon for details.</p>
+                                <div id="map" class="flex-grow-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="detail-view" style="display: none;">
+        
+                <button class="btn btn-outline-secondary mb-3" onclick="showDashboard()">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </button>
+        
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="mb-0">Transformer ID: T-4091</h1>
+                    <span class="badge bg-danger fs-4">STATUS: CRITICAL</span>
+                </div>
+                <p class="fs-5 text-muted">Location: Region Nazimabad, Sub-region Nadra Mega Center, Street X</p>
+        
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Health & Recommendation</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="text-muted">Health Score</h6>
+                                <h1 class="display-1 fw-bold text-danger">18 <span class="fs-3 text-muted">/ 100</span></h1>
+                                <p class="text-danger">High (88%) probability of failure within 72 hours.</p>
+        
+                                <div class="alert alert-warning mt-3">
+                                    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> System Recommendation</h4>
+                                    <p class="fs-5 mb-0">SCHEDULE MAINTENANCE</p>
+                                    <hr>
+                                    <p class="mb-0">Reason: Sustained high load stress & temperature anomalies detected.</p>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+                                    <button class="btn btn-primary btn-lg">
+                                        <i class="bi bi-send-check-fill me-2"></i> Assign Maintenance Crew
+                                    </button>
+                                    <button class="btn btn-outline-secondary">
+                                        View Maintenance History
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="col-md-7">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Live Metrics (from IoT Sensors)</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between"><strong>Current Load:</strong> <span>85%</span></li>
+                                <li class="list-group-item d-flex justify-content-between"><strong>Current Temperature:</strong> <span>92°C</span></li>
+                                <li class="list-group-item d-flex justify-content-between"><strong>Ambient Temperature:</strong> <span>34°C</span></li>
+                                <li class="list-group-item d-flex justify-content-between"><strong>Oil Level:</strong> <span>98%</span></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card shadow-sm">
+                            <div class="card-header">
+                                <h5 class="mb-0">Historical Trends (Last 30 Days)</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="text-muted">Health Score & Load Trend</h6>
+                                <div class="mb-3" style="position: relative; height: 200px;">
+                                    <canvas id="healthLoadChart"></canvas>
+                                </div>
+                                
+                                <h6 class="text-muted">Temperature Trend (Internal vs. Ambient)</h6>
+                                <div style="position: relative; height: 200px;">
+                                    <canvas id="tempChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    </div> 
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript Files -->
+    <script src="js/dashboard.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/map.js"></script>
+
+</body>
+</html>
